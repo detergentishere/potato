@@ -1,0 +1,7 @@
+numpy==2.2.6
+opencv-python==4.9.0.80
+scikit-learn==1.7.1
+joblib==1.5.2
+kagglehub==0.3.13
+tqdm==4.67.1
+pyyaml==6.0.2

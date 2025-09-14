@@ -6,7 +6,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report
 import joblib
-import random
 import warnings
 
 warnings.filterwarnings("ignore", category=UserWarning, module="cv2")
@@ -51,9 +50,29 @@ def augment_image(img):
     
     # Brightness adjustment
     for factor in [0.8, 1.2]:
-        img_bright = cv2.convertScaleAbs(img, alpha=factor, beta=0)
-        augmented.append(img_bright)
+        augmented.append(cv2.convertScaleAbs(img, alpha=factor, beta=0))
     
+    return augmented
+
+# ----------------------------
+# Augmentation for hard non-potato cases
+# ----------------------------
+def augment_hard_case(img):
+    augmented = [img]
+    rows, cols = img.shape[:2]
+
+    # Flips
+    augmented.append(cv2.flip(img, 1))
+
+    # Rotations
+    for angle in [-10, 10]:
+        M = cv2.getRotationMatrix2D((cols/2, rows/2), angle, 1)
+        augmented.append(cv2.warpAffine(img, M, (cols, rows)))
+
+    # Brightness adjustments
+    for factor in [0.9, 1.1]:
+        augmented.append(cv2.convertScaleAbs(img, alpha=factor, beta=0))
+
     return augmented
 
 # ----------------------------
@@ -64,10 +83,10 @@ def load_images_hog(folder, label, augment=False):
     for file in os.listdir(folder):
         path_img = os.path.join(folder, file)
         img = cv2.imread(path_img)
-        if img is None: 
+        if img is None:
             continue
         img = cv2.resize(img, (64, 64))
-        
+
         imgs_to_use = augment_image(img) if augment else [img]
         for im in imgs_to_use:
             data.append(compute_hog(im))
@@ -75,25 +94,26 @@ def load_images_hog(folder, label, augment=False):
     return data, labels
 
 # ----------------------------
-# Potato path
+# Load potato images
 # ----------------------------
 potato_path = os.path.join(train_path, "Potato")
 potato_data, potato_labels = load_images_hog(potato_path, 1, augment=True)
 
 # ----------------------------
-# Prepare a tiny dummy "not potato" set for first training
+# Load a dummy non-potato for first training
 # ----------------------------
 other_paths = [os.path.join(train_path, cls) for cls in os.listdir(train_path) if cls != "Potato"]
 dummy_path = other_paths[0]
 dummy_data, dummy_labels = load_images_hog(dummy_path, 0, augment=False)
 
+# Merge initial dataset
 X = np.array(potato_data + dummy_data)
 y = np.array(potato_labels + dummy_labels)
 
 xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
 # ----------------------------
-# Train first model
+# Train initial potato detector
 # ----------------------------
 model = SVC(kernel='linear', class_weight='balanced', probability=True)
 model.fit(xtrain, ytrain)
@@ -103,10 +123,10 @@ yp = model.predict(xtest)
 print(classification_report(ytest, yp))
 
 # ----------------------------
-# Incrementally add remaining crops
+# Incrementally add remaining crops with hard-case focus
 # ----------------------------
 remaining_paths = [p for p in other_paths if p != dummy_path]
-batch_size = 3  # number of crops per batch
+batch_size = 3  # crops per batch
 
 for i in range(0, len(remaining_paths), batch_size):
     batch = remaining_paths[i:i+batch_size]
@@ -115,19 +135,55 @@ for i in range(0, len(remaining_paths), batch_size):
         d, l = load_images_hog(folder, 0, augment=False)
         batch_data.extend(d)
         batch_labels.extend(l)
-    
+
     # Merge with existing dataset
     X = np.vstack([X, np.array(batch_data)])
     y = np.hstack([y, np.array(batch_labels)])
-    
+
     # Shuffle dataset
     idx = np.arange(len(X))
     np.random.shuffle(idx)
     X, y = X[idx], y[idx]
-    
-    # Split and retrain
+
+    # Split
     xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+    
+    # Retrain
     model.fit(xtrain, ytrain)
+    
+    # ----------------------------
+    # Identify hard non-potato cases
+    # ----------------------------
+    yp = model.predict(xtest)
+    mis_idx = np.where((ytest == 0) & (yp == 1))[0]
+    hard_data, hard_labels = [], []
+    
+    for idx_h in mis_idx:
+        # Recover original image shape from HOG is tricky, so we can skip recomputation for simplicity
+        # Instead, re-load the image from batch folder (could match indices)
+        # Here we approximate by augmenting the batch images that were misclassified
+        # For simplicity, take all batch images as potential hard cases
+        for img_path in os.listdir(batch[idx_h % len(batch)]):
+            img = cv2.imread(os.path.join(batch[idx_h % len(batch)], img_path))
+            if img is None:
+                continue
+            img = cv2.resize(img, (64, 64))
+            aug_imgs = augment_hard_case(img)
+            for im in aug_imgs:
+                hard_data.append(compute_hog(im))
+                hard_labels.append(0)
+    
+    if hard_data:
+        X = np.vstack([X, np.array(hard_data)])
+        y = np.hstack([y, np.array(hard_labels)])
+        # Shuffle again
+        idx = np.arange(len(X))
+        np.random.shuffle(idx)
+        X, y = X[idx], y[idx]
+
+        # Retrain after adding hard cases
+        xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+        model.fit(xtrain, ytrain)
     
     print(f"🥔 Incremental Training Complete: Added crops {i+1} to {i+len(batch)} 🥔")
     yp = model.predict(xtest)

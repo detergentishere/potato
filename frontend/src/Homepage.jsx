@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 function Homepage() {
   return (
     <div
-      className="min-h-screen bg-black relative font-body"
+      className="min-h-screen bg-black relative font-serif"
       style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1602222886008-3c6c55de6cf7?auto=format&fit=crop&w=1470&q=80')",
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1602222886008-3c6c55de6cf7?auto=format&fit=crop&w=1470&q=80')",
         backgroundSize: "cover",
       }}
     >
@@ -38,17 +39,20 @@ function Homepage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
         >
-          <h1 className="text-6xl font-[Bebas_Neue] font-black text-[#D4C77C] mb-6 leading-tight drop-shadow-xl">
+          <h1 className="text-6xl font-extrabold text-[#D4C77C] mb-6 leading-tight drop-shadow-xl">
             Welcome to <span className="text-[#A8743B]">Potato Hub</span>
           </h1>
-          <p className="text-xl text-white/90 mb-8 max-w-lg font-body">
+          <p className="text-xl text-white/90 mb-8 max-w-lg">
             Discover, learn, and explore everything about potatoes — from detection to crop health and market prices, all in one elegant platform.
           </p>
         </motion.div>
       </div>
 
       <style>{`
-        @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-20px);} }
+        @keyframes float { 
+          0%,100% { transform: translateY(0); } 
+          50% { transform: translateY(-20px); } 
+        }
         .animate-float { animation: float 5s ease-in-out infinite; }
       `}</style>
     </div>

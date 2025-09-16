@@ -1,11 +1,11 @@
 import React from "react";
-import HeroPotato from "./assets/download4.jpg"; // Top hero image
+import HeroPotato from "./assets/download4.jpg";
 import Potato1 from "./assets/download1.jpg";
 import Potato2 from "./assets/download2.jpg";
 import Potato3 from "./assets/download3.jpg";
 
 const About = () => {
-  const potatoImages = [Potato1, Potato2, Potato3]; // Bottom grid images
+  const potatoImages = [Potato1, Potato2, Potato3]; 
 
   return (
     <div className="font-serif bg-black text-white min-h-screen pt-24">

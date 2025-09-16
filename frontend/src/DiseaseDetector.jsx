@@ -49,7 +49,7 @@ const DiseaseDetector = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black relative font-sans text-white flex justify-center px-6 pt-24 pb-8">
+    <div className="min-h-screen bg-black relative font-serif text-white flex justify-center px-6 pt-24 pb-8">
       {/* Background overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -96,7 +96,7 @@ const DiseaseDetector = () => {
 
           {/* Upload Card */}
           <div className="bg-gradient-to-br from-[#1A1A1A]/90 to-[#2A2A2A]/90 backdrop-blur-md shadow-[0_0_25px_rgba(230,192,103,0.3)] rounded-2xl p-4 flex flex-col items-center gap-3 border border-[#E6C067]/40 w-full max-w-md">
-            <label className="px-4 py-2 rounded-lg bg-[#2C2C2C] border border-[#E6C067]/60 text-[#E6C067] cursor-pointer hover:bg-[#3a3a3a] transition text-sm shadow-md">
+            <label className="px-4 py-2 rounded-lg bg-[#2C2C2C] border border-[#E6C067]/60 text-[#E6C067] cursor-pointer hover:bg-[#3a3a3a] transition text-sm shadow-md font-serif">
               Upload Image
               <input
                 type="file"
@@ -119,8 +119,11 @@ const DiseaseDetector = () => {
 
             {loading && (
               <motion.div
-                className="rounded-xl px-4 py-2 w-full text-center font-sans font-semibold text-sm shadow-inner"
-                style={{ backgroundColor: "rgba(40,40,40,0.6)", color: "#E6C067" }}
+                className="rounded-xl px-4 py-2 w-full text-center font-serif font-semibold text-sm shadow-inner"
+                style={{
+                  backgroundColor: "rgba(40,40,40,0.6)",
+                  color: "#E6C067",
+                }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6 }}
@@ -131,7 +134,7 @@ const DiseaseDetector = () => {
 
             {result && !loading && (
               <motion.div
-                className="rounded-xl px-4 py-2 w-full text-center font-sans font-semibold text-sm shadow-inner"
+                className="rounded-xl px-4 py-2 w-full text-center font-serif font-semibold text-sm shadow-inner"
                 style={{ backgroundColor: getResultBg(), color: getResultColor() }}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}

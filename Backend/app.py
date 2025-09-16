@@ -3,10 +3,8 @@ import cv2, numpy as np
 from skimage.feature import hog
 import joblib
 
-router = APIRouter()
-
-# Load the trained disease model
-disease_model = joblib.load("potato_model.pkl")
+router=APIRouter()
+disease_model = joblib.load("potatodisease_model.pkl")
 categories = ["Healthy", "Early_blight", "Late_blight"]
 
 def compute_features(img):

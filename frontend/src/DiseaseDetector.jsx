@@ -19,13 +19,13 @@ const DiseaseDetector = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:8000/predict", {
+      const response = await fetch("http://localhost:8000/predict/disease/", {
         method: "POST",
         body: formData,
       });
 
       const data = await response.json();
-      setResult(data.prediction);
+      setResult(data.result);
     } catch (err) {
       console.error(err);
       setResult("❌ Error: Could not analyze image");

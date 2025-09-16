@@ -4,18 +4,32 @@ import { motion } from "framer-motion";
 const PotatoOrNot = () => {
   const [image, setImage] = useState(null);
   const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleUpload = (e) => {
+  const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setImage(URL.createObjectURL(file));
-    setResult("Analyzing... 🔬");
+    setResult("");
+    setLoading(true);
 
-    setTimeout(() => {
-      const predictions = ["Potato 🥔", "Not a Potato ❌"];
-      setResult(predictions[Math.floor(Math.random() * predictions.length)]);
-    }, 2000);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("http://localhost:8000/predict/potato/", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      setResult(data.result);
+    } catch (err) {
+      console.error(err);
+      setResult("❌ Error: Could not analyze image");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getResultColor = () => {
@@ -59,7 +73,6 @@ const PotatoOrNot = () => {
           </p>
 
           <div className="bg-gradient-to-br from-[#1A1A1A]/90 to-[#2A2A2A]/90 backdrop-blur-md shadow-[0_0_25px_rgba(230,192,103,0.3)] rounded-2xl p-5 flex flex-col items-center gap-4 border border-[#E6C067]/40 w-full max-w-md">
-            {/* Smaller Upload Button */}
             <label className="px-4 py-2 rounded-lg bg-[#2C2C2C] border border-[#E6C067]/60 text-[#E6C067] cursor-pointer hover:bg-[#3a3a3a] transition text-sm shadow-md">
               Choose File
               <input
@@ -81,7 +94,19 @@ const PotatoOrNot = () => {
               />
             )}
 
-            {result && (
+            {loading && (
+              <motion.div
+                className="rounded-xl px-6 py-3 w-full text-center font-body font-semibold text-lg shadow-inner"
+                style={{ backgroundColor: "rgba(40,40,40,0.7)", color: "#E6C067" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6 }}
+              >
+                Analyzing... 🔬
+              </motion.div>
+            )}
+
+            {result && !loading && (
               <motion.div
                 className="rounded-xl px-6 py-3 w-full text-center font-body font-semibold text-lg shadow-inner"
                 style={{ backgroundColor: getResultBg(), color: getResultColor() }}

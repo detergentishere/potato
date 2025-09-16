@@ -14,11 +14,11 @@ import warnings
 
 warnings.filterwarnings("ignore", category=UserWarning, module="cv2")
 
-potato_only_train = r"C:\Users\isha\Desktop\potato\MLsection\wha\data\train"
-potato_only_test  = r"C:\Users\isha\Desktop\potato\MLsection\wha\data\test"
+potato_only_train = r"address"
+potato_only_test  = r"address"
 
-kaggle_train = r"C:\Users\isha\.cache\kagglehub\datasets\kritikseth\fruit-and-vegetable-image-recognition\versions\8\train"
-kaggle_test  = r"C:\Users\isha\.cache\kagglehub\datasets\kritikseth\fruit-and-vegetable-image-recognition\versions\8\test"
+kaggle_train = r"address"
+kaggle_test  = r"address"
 
 categories = ["Potato", "NotPotato"]
 

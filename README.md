@@ -43,6 +43,3 @@ A complete potato companion app! Combines **Potato Detection AI**, **Potato Dise
 
 Special thanks to all the **image owners and dataset contributors** for allowing us to use these datasets and images. Your work makes projects like Potato Hub possible!  
 
----
-cd potato-hub
-npm install

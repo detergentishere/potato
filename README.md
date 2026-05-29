@@ -1,4 +1,4 @@
-# 🥔 Potato Hub
+# Potato Hub
 
 A complete potato companion app! Combines **Potato Detection AI**, **Potato Disease Detector**, and more for fun and practical use.  
 
@@ -6,13 +6,13 @@ A complete potato companion app! Combines **Potato Detection AI**, **Potato Dise
 
 ## Features
 
-### 🥔 Potato Detector
+### Potato Detector
 - Binary classifier to detect whether an image is a potato or not.  
 - Trained incrementally using **HOG + SVM**.  
 - Supports **data augmentation** to improve detection.  
 - Outputs detailed **Potato Intelligence Reports** for model performance.  
 
-### 💊 Potato Disease Detector
+### Potato Disease Detector
 - Track diseases in your potato plants.  
 - Classifies images into **Healthy**, **Early Blight**, and **Late Blight** categories.  
 - Uses HOG + PCA + SVM for robust predictions with data augmentation.  
@@ -20,7 +20,7 @@ A complete potato companion app! Combines **Potato Detection AI**, **Potato Dise
 
 ---
 
-## 📂 Datasets & Credits
+## Datasets & Credits
 
 ### 1. Local Potato Dataset
 - **Source:** [images.cv – Potato Image Classification Dataset](https://images.cv/dataset/potato-image-classification-dataset?utm_source=chatgpt.com)  
@@ -39,7 +39,13 @@ A complete potato companion app! Combines **Potato Detection AI**, **Potato Dise
 
 ---
 
-## 🙏 Acknowledgements
+## Acknowledgements
 
 Special thanks to all the **image owners and dataset contributors** for allowing us to use these datasets and images. Your work makes projects like Potato Hub possible!  
+
+## Demo
+https://www.linkedin.com/posts/isha-suryawanshi-9048b4336_if-theres-one-thing-you-should-know-about-ugcPost-7373757573100969984-mMK-/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFR-mxQB4oxwi2cq2HZIwPg906egmXloRVg
+
+
+
 
